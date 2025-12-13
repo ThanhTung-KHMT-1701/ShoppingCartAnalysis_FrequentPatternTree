@@ -11,11 +11,11 @@ pm.execute_notebook(
         DATA_PATH="data/raw/online_retail.csv",
         COUNTRY="United Kingdom",
         OUTPUT_DIR="data/processed",
-        PLOT_REVENUE=False,         # tắt bớt plot khi chạy batch
-        PLOT_TIME_PATTERNS=False,
-        PLOT_PRODUCTS=False,
-        PLOT_CUSTOMERS=False,
-        PLOT_RFM=False,
+        PLOT_REVENUE=True,         # tắt bớt plot khi chạy batch
+        PLOT_TIME_PATTERNS=True,
+        PLOT_PRODUCTS=True,
+        PLOT_CUSTOMERS=True,
+        PLOT_RFM=True,
     ),
     kernel_name="python3",
 )
@@ -36,7 +36,6 @@ pm.execute_notebook(
     kernel_name="python3",
 )
 
-
 # Chạy Notebook Apriori Modelling
 pm.execute_notebook(
     "notebooks/apriori_modelling.ipynb",
@@ -44,7 +43,6 @@ pm.execute_notebook(
     parameters=dict(
         BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
         RULES_OUTPUT_PATH="data/processed/rules_apriori_filtered.csv",
-        EXEC_TIME_APRIORI_PATH="data/processed/apriori_time.txt",
 
         # Tham số Apriori
         MIN_SUPPORT=0.01,
@@ -65,59 +63,14 @@ pm.execute_notebook(
         TOP_N_RULES=20,
 
         # Tắt plot khi chạy batch (bật = True nếu muốn xem hình)
-        PLOT_TOP_LIFT=False,
-        PLOT_TOP_CONF=False,
-        PLOT_SCATTER=False,
-        PLOT_NETWORK=False,
-    ),
-    kernel_name="python3",
-)
-
-# 4. FP-Growth modeling
-pm.execute_notebook(
-    "notebooks/fp_growth_modelling.ipynb",            # input notebook
-    "notebooks/runs/fp_growth_modelling_run.ipynb",   # output notebook sau khi chạy
-    parameters=dict(
-        BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
-        RULES_FPG_OUTPUT_PATH="data/processed/rules_fpgrowth_filtered.csv",
-        EXEC_TIME_FPG_PATH="data/processed/fpgrowth_time.txt",
-
-        MIN_SUPPORT=0.01,
-        MAX_LEN=3,
-
-        METRIC="lift",
-        MIN_THRESHOLD=1.0,
-
-        FILTER_MIN_SUPPORT=0.01,
-        FILTER_MIN_CONF=0.3,
-        FILTER_MIN_LIFT=1.2,
-        FILTER_MAX_ANTECEDENTS=2,
-        FILTER_MAX_CONSEQUENTS=1,
-
-        TOP_N_RULES=20,
-
         PLOT_TOP_LIFT=True,
         PLOT_TOP_CONF=True,
         PLOT_SCATTER=True,
         PLOT_NETWORK=True,
-        PLOT_PLOTLY_SCATTER=True,
+        PLOT_PLOTLY_NETWORK=True,
+        PLOT_PLOTLY_SCATTER=True,  
     ),
-    kernel_name="python3",   
-)
-
-# 5. Apriori vs FP‐Growth Comparison
-
-pm.execute_notebook(
-    "notebooks/compare_algorithms.ipynb",
-    "notebooks/runs/05_compare_algorithms_run.ipynb",
-    parameters=dict(
-        AR_RULES_PATH="data/processed/rules_apriori_filtered.csv",
-        FPG_RULES_PATH="data/processed/rules_fpgrowth_filtered.csv",
-        EXEC_TIME_APRIORI_PATH="data/processed/apriori_time.txt",
-        EXEC_TIME_FPG_PATH="data/processed/fpgrowth_time.txt",
-        OUTPUT_COMPARE_TABLE="data/processed/comparison_apriori_vs_fpg.csv",
-    ),
-    kernel_name="python3",  
+    kernel_name="python3",
 )
 
 
