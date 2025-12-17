@@ -45,7 +45,7 @@ os.makedirs("notebooks/runs", exist_ok=True)
 #         RULES_OUTPUT_PATH="data/processed/rules_apriori_filtered.csv",
 
 #         # Tham số Apriori
-#         MIN_SUPPORT=0.005,
+#         MIN_SUPPORT=0.01,
 #         MAX_LEN=2,
 
 #         # Generate rules
@@ -81,7 +81,7 @@ os.makedirs("notebooks/runs", exist_ok=True)
 #         BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
 #         RULES_OUTPUT_PATH="data/processed/rules_fpgrowth_filtered.csv",
 
-#         MIN_SUPPORT=0.005,
+#         MIN_SUPPORT=0.01,
 #         MAX_LEN=3,
 
 #         METRIC="lift",
@@ -111,7 +111,7 @@ pm.execute_notebook(
     parameters=dict(
         BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
 
-        MIN_SUPPORT=0.005,
+        MIN_SUPPORT=0.01,
         MAX_LEN=3,
 
         METRIC="lift",
