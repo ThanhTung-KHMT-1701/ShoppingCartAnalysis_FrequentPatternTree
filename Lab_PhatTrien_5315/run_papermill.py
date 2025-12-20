@@ -4,8 +4,8 @@ from pathlib import Path
 import papermill as pm
 
 LAB_DIR = Path(__file__).resolve().parent
-# Workspace root is expected to contain the shared `data/` directory.
-PROJECT_ROOT = LAB_DIR.parent if (LAB_DIR.parent / "data").exists() else LAB_DIR
+# Project root là thư mục cha chứa data/ (ShoppingCartAnalysis_FrequentPatternTree)
+PROJECT_ROOT = LAB_DIR.parent
 
 NOTEBOOKS_DIR = LAB_DIR / "notebooks"
 RUNS_DIR = NOTEBOOKS_DIR / "runs"
@@ -14,13 +14,21 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
 
+# Kiểm tra thư mục data tồn tại
+if not DATA_DIR.exists():
+    raise FileNotFoundError(f"❌ Không tìm thấy thư mục data tại: {DATA_DIR}")
+
+print(f"📁 LAB_DIR: {LAB_DIR}")
+print(f"📁 PROJECT_ROOT: {PROJECT_ROOT}")
+print(f"📁 DATA_DIR: {DATA_DIR}")
+
 RUNS_DIR.mkdir(parents=True, exist_ok=True)
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-# Ensure relative imports/paths inside notebooks resolve against this Lab folder.
-os.chdir(LAB_DIR)
+# Chuyển working directory về PROJECT_ROOT để notebook tìm được data/
+os.chdir(PROJECT_ROOT)
 
-# run_preprocessing_and_eda.py
+# Chay run_preprocessing_and_eda.py
 # pm.execute_notebook(
 #     str(NOTEBOOKS_DIR / "preprocessing_and_eda.ipynb"),
 #     str(RUNS_DIR / "preprocessing_and_eda_run.ipynb"),
@@ -37,8 +45,7 @@ os.chdir(LAB_DIR)
 #     kernel_name="python3",
 # )
 
-# run_basket_preparation.py
-
+# Chay run_basket_preparation.py
 # pm.execute_notebook(
 #     str(NOTEBOOKS_DIR / "basket_preparation.ipynb"),
 #     str(RUNS_DIR / "basket_preparation_run.ipynb"),
@@ -122,19 +129,29 @@ os.chdir(LAB_DIR)
 # )
 
 # Chạy Notebook So sánh Apriori và FP-Growth
+# pm.execute_notebook(
+#     str(NOTEBOOKS_DIR / "compare_apriori_fpgrowth.ipynb"),
+#     str(RUNS_DIR / "compare_apriori_fpgrowth_run.ipynb"),
+#     parameters=dict(
+#         BASKET_BOOL_PATH=str(PROCESSED_DIR / "basket_bool.parquet"),
+
+#         MIN_SUPPORT=0.01,
+#         MAX_LEN=3,
+
+#         METRIC="lift",
+#         MIN_THRESHOLD=1.0,
+#     ),
+#     kernel_name="python3",
+# )
+
+# =============================================================================
+# Chạy Notebook High-Utility Itemset Mining (Lab_PhatTrien_5315)
+# =============================================================================
+# Notebook đã có giá trị mặc định, chạy trực tiếp không cần inject parameters
 pm.execute_notebook(
-    str(NOTEBOOKS_DIR / "compare_apriori_fpgrowth.ipynb"),
-    str(RUNS_DIR / "compare_apriori_fpgrowth_run.ipynb"),
-    parameters=dict(
-        BASKET_BOOL_PATH=str(PROCESSED_DIR / "basket_bool.parquet"),
-
-        MIN_SUPPORT=0.01,
-        MAX_LEN=3,
-
-        METRIC="lift",
-        MIN_THRESHOLD=1.0,
-    ),
+    str(NOTEBOOKS_DIR / "Lab_PhatTrien_5315.ipynb"),
+    str(RUNS_DIR / "Lab_PhatTrien_5315_run.ipynb"),
     kernel_name="python3",
 )
 
-print("Đã chạy xong pipeline")
+print("✅ Đã chạy xong pipeline High-Utility Itemset Mining!")
