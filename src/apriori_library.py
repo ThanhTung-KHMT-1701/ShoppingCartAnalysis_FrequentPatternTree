@@ -1225,3 +1225,520 @@ class DataVisualizer:
         plt.axis("off")
         plt.tight_layout()
         plt.show()
+
+
+# =========================================================
+# 7. WEIGHTED ASSOCIATION RULES MINING
+# =========================================================
+
+
+class WeightedAprioriMiner:
+    """
+    A class for mining weighted association rules using modified Apriori algorithm.
+    
+    Instead of counting occurrences (support = count/total), 
+    we calculate weighted support = sum(weights)/sum(all_weights).
+    
+    This allows giving more importance to certain transactions based on:
+    - Transaction value (TotalPrice)
+    - Customer importance (CustomerValue)
+    - Recency (recent transactions weighted higher)
+    - Any custom weight function
+    """
+    
+    def __init__(self, basket_bool: pd.DataFrame, weights: pd.Series = None):
+        """
+        Initialize the WeightedAprioriMiner.
+        
+        Args:
+            basket_bool (pd.DataFrame): Boolean encoded basket (rows=transactions, cols=items)
+            weights (pd.Series): Weight for each transaction (same index as basket_bool).
+                                If None, defaults to uniform weights (= traditional Apriori)
+        """
+        self.basket_bool = basket_bool
+        
+        if weights is None:
+            # Uniform weights = traditional Apriori
+            self.weights = pd.Series(1.0, index=basket_bool.index)
+        else:
+            if len(weights) != len(basket_bool):
+                raise ValueError("weights must have same length as basket_bool")
+            # Keep original index for alignment
+            self.weights = weights.copy()
+        
+        # Normalize weights to sum = 1
+        self.weights = self.weights / self.weights.sum()
+        
+        self.frequent_itemsets = None
+        self.rules = None
+        self.weighted_support_dict = {}  # Cache for itemset supports
+        
+    def _calculate_weighted_support(self, itemset: frozenset) -> float:
+        """
+        Calculate weighted support for an itemset.
+        
+        weighted_support(itemset) = sum(weight(T) for T containing itemset)
+        
+        Args:
+            itemset (frozenset): Set of items
+            
+        Returns:
+            float: Weighted support value [0, 1]
+        """
+        if itemset in self.weighted_support_dict:
+            return self.weighted_support_dict[itemset]
+        
+        # Find transactions containing all items in itemset
+        item_list = list(itemset)
+        mask = pd.Series(True, index=self.basket_bool.index)
+        
+        for item in item_list:
+            if item in self.basket_bool.columns:
+                mask &= self.basket_bool[item]
+            else:
+                # Item not in basket -> support = 0
+                self.weighted_support_dict[itemset] = 0.0
+                return 0.0
+        
+        # Sum weights of matching transactions
+        # Use .loc to ensure index alignment
+        weighted_sup = self.weights.loc[mask[mask].index].sum()
+        self.weighted_support_dict[itemset] = weighted_sup
+        
+        return weighted_sup
+    
+    def mine_frequent_itemsets(
+        self, 
+        min_support: float = 0.01, 
+        max_len: int = None,
+        use_colnames: bool = True
+    ) -> pd.DataFrame:
+        """
+        Mine frequent itemsets using weighted support.
+        
+        Args:
+            min_support (float): Minimum weighted support threshold
+            max_len (int): Maximum itemset length (None = no limit)
+            use_colnames (bool): Return item names (True) or indices (False)
+            
+        Returns:
+            pd.DataFrame: Frequent itemsets with columns ['support', 'itemsets']
+        """
+        print(f"Mining weighted frequent itemsets (min_support={min_support})...")
+        
+        # Clear cache
+        self.weighted_support_dict = {}
+        
+        items = list(self.basket_bool.columns)
+        frequent_sets = []
+        
+        # Level 1: Individual items
+        print("  - Level 1: Individual items")
+        level_1 = []
+        for item in items:
+            itemset = frozenset([item])
+            sup = self._calculate_weighted_support(itemset)
+            if sup >= min_support:
+                level_1.append({'support': sup, 'itemsets': itemset})
+        
+        if not level_1:
+            print("    No frequent 1-itemsets found!")
+            self.frequent_itemsets = pd.DataFrame(columns=['support', 'itemsets'])
+            return self.frequent_itemsets
+        
+        print(f"    Found {len(level_1)} frequent 1-itemsets")
+        frequent_sets.extend(level_1)
+        
+        # Level k (k >= 2)
+        current_level = level_1
+        k = 2
+        
+        while current_level and (max_len is None or k <= max_len):
+            print(f"  - Level {k}: Generating {k}-itemsets...")
+            
+            # Generate candidates from previous level
+            candidates = self._generate_candidates(current_level, k)
+            
+            if not candidates:
+                break
+            
+            # Calculate weighted support for each candidate
+            next_level = []
+            for itemset in candidates:
+                sup = self._calculate_weighted_support(itemset)
+                if sup >= min_support:
+                    next_level.append({'support': sup, 'itemsets': itemset})
+            
+            print(f"    Found {len(next_level)} frequent {k}-itemsets")
+            frequent_sets.extend(next_level)
+            
+            current_level = next_level
+            k += 1
+        
+        # Convert to DataFrame
+        if not frequent_sets:
+            self.frequent_itemsets = pd.DataFrame(columns=['support', 'itemsets'])
+        else:
+            self.frequent_itemsets = pd.DataFrame(frequent_sets)
+            self.frequent_itemsets = self.frequent_itemsets.sort_values(
+                'support', ascending=False
+            ).reset_index(drop=True)
+        
+        print(f"\nTotal frequent itemsets found: {len(self.frequent_itemsets)}")
+        return self.frequent_itemsets
+    
+    def _generate_candidates(self, prev_level: list, k: int) -> list:
+        """
+        Generate candidate k-itemsets from frequent (k-1)-itemsets.
+        
+        Args:
+            prev_level (list): List of dicts with 'itemsets' key
+            k (int): Target itemset size
+            
+        Returns:
+            list: List of candidate frozensets
+        """
+        candidates = set()
+        n = len(prev_level)
+        
+        # Self-join: combine pairs of (k-1)-itemsets
+        for i in range(n):
+            for j in range(i + 1, n):
+                itemset_i = prev_level[i]['itemsets']
+                itemset_j = prev_level[j]['itemsets']
+                
+                # Union of two (k-1)-itemsets
+                union = itemset_i | itemset_j
+                
+                # If union has k items, it's a valid candidate
+                if len(union) == k:
+                    candidates.add(union)
+        
+        return list(candidates)
+    
+    def generate_rules(
+        self,
+        metric: str = "lift",
+        min_threshold: float = 1.0
+    ) -> pd.DataFrame:
+        """
+        Generate weighted association rules from frequent itemsets.
+        
+        Args:
+            metric (str): Metric to evaluate rules ('lift', 'confidence', 'support')
+            min_threshold (float): Minimum threshold for the metric
+            
+        Returns:
+            pd.DataFrame: Association rules with metrics
+        """
+        if self.frequent_itemsets is None or len(self.frequent_itemsets) == 0:
+            raise ValueError(
+                "No frequent itemsets. Please run mine_frequent_itemsets() first."
+            )
+        
+        print(f"Generating weighted association rules...")
+        
+        rules_list = []
+        
+        # Only consider itemsets with at least 2 items
+        multi_itemsets = self.frequent_itemsets[
+            self.frequent_itemsets['itemsets'].apply(len) >= 2
+        ]
+        
+        for idx, row in multi_itemsets.iterrows():
+            itemset = row['itemsets']
+            itemset_sup = row['support']
+            
+            # Generate all non-empty proper subsets as antecedents
+            items = list(itemset)
+            n_items = len(items)
+            
+            # Iterate through all possible subsets (except empty and full set)
+            for i in range(1, 2**n_items - 1):
+                antecedent_items = [items[j] for j in range(n_items) if (i & (1 << j))]
+                antecedent = frozenset(antecedent_items)
+                consequent = itemset - antecedent
+                
+                # Calculate metrics
+                ant_sup = self._calculate_weighted_support(antecedent)
+                cons_sup = self._calculate_weighted_support(consequent)
+                
+                if ant_sup == 0:
+                    continue
+                
+                confidence = itemset_sup / ant_sup
+                
+                if cons_sup == 0:
+                    lift = 0
+                else:
+                    lift = confidence / cons_sup
+                
+                # Check threshold
+                if metric == "lift" and lift < min_threshold:
+                    continue
+                elif metric == "confidence" and confidence < min_threshold:
+                    continue
+                elif metric == "support" and itemset_sup < min_threshold:
+                    continue
+                
+                rules_list.append({
+                    'antecedents': antecedent,
+                    'consequents': consequent,
+                    'antecedent support': ant_sup,
+                    'consequent support': cons_sup,
+                    'support': itemset_sup,
+                    'confidence': confidence,
+                    'lift': lift,
+                    'leverage': itemset_sup - (ant_sup * cons_sup),
+                    'conviction': (1 - cons_sup) / (1 - confidence) if confidence < 1 else np.inf
+                })
+        
+        if not rules_list:
+            self.rules = pd.DataFrame(columns=[
+                'antecedents', 'consequents', 'antecedent support',
+                'consequent support', 'support', 'confidence', 'lift',
+                'leverage', 'conviction'
+            ])
+        else:
+            self.rules = pd.DataFrame(rules_list)
+            self.rules = self.rules.sort_values(
+                ['lift', 'confidence'], ascending=False
+            ).reset_index(drop=True)
+        
+        print(f"Generated {len(self.rules)} weighted rules")
+        return self.rules
+    
+    @staticmethod
+    def _frozenset_to_str(fs: frozenset) -> str:
+        """Convert frozenset to readable string."""
+        return ", ".join(sorted(list(fs)))
+    
+    def add_readable_rule_str(self) -> pd.DataFrame:
+        """Add human-readable string columns for rules."""
+        if self.rules is None or len(self.rules) == 0:
+            raise ValueError("No rules available. Call generate_rules() first.")
+        
+        rules = self.rules.copy()
+        rules["antecedents_str"] = rules["antecedents"].apply(self._frozenset_to_str)
+        rules["consequents_str"] = rules["consequents"].apply(self._frozenset_to_str)
+        rules["rule_str"] = rules["antecedents_str"] + " → " + rules["consequents_str"]
+        self.rules = rules
+        return self.rules
+
+
+class WeightedFPGrowthMiner:
+    """
+    A class for mining weighted association rules using modified FP-Growth algorithm.
+    
+    Note: This is a simplified implementation that uses weighted support calculation
+    similar to WeightedAprioriMiner. For production use, consider implementing
+    a true weighted FP-tree structure.
+    """
+    
+    def __init__(self, basket_bool: pd.DataFrame, weights: pd.Series = None):
+        """
+        Initialize the WeightedFPGrowthMiner.
+        
+        Args:
+            basket_bool (pd.DataFrame): Boolean encoded basket
+            weights (pd.Series): Weight for each transaction
+        """
+        self.basket_bool = basket_bool
+        
+        if weights is None:
+            self.weights = pd.Series(1.0, index=basket_bool.index)
+        else:
+            if len(weights) != len(basket_bool):
+                raise ValueError("weights must have same length as basket_bool")
+            # Keep the original index (don't reset!)
+            self.weights = weights.copy()
+        
+        # Normalize weights
+        self.weights = self.weights / self.weights.sum()
+        
+        self.frequent_itemsets = None
+        self.rules = None
+        self.weighted_apriori_miner = None
+    
+    def mine_frequent_itemsets(
+        self,
+        min_support: float = 0.01,
+        max_len: int = None,
+        use_colnames: bool = True
+    ) -> pd.DataFrame:
+        """
+        Mine frequent itemsets using weighted FP-Growth approach.
+        
+        Note: This simplified version delegates to WeightedAprioriMiner.
+        A full implementation would build a weighted FP-tree.
+        
+        Args:
+            min_support (float): Minimum weighted support
+            max_len (int): Maximum itemset length
+            use_colnames (bool): Use column names
+            
+        Returns:
+            pd.DataFrame: Frequent itemsets
+        """
+        print("WeightedFPGrowthMiner: Using weighted support calculation...")
+        print("(Note: Simplified implementation - uses same algorithm as WeightedApriori)")
+        
+        # Use WeightedAprioriMiner internally
+        self.weighted_apriori_miner = WeightedAprioriMiner(
+            self.basket_bool, 
+            self.weights
+        )
+        
+        self.frequent_itemsets = self.weighted_apriori_miner.mine_frequent_itemsets(
+            min_support=min_support,
+            max_len=max_len,
+            use_colnames=use_colnames
+        )
+        
+        return self.frequent_itemsets
+    
+    def generate_rules(
+        self,
+        metric: str = "lift",
+        min_threshold: float = 1.0
+    ) -> pd.DataFrame:
+        """Generate weighted association rules."""
+        if self.weighted_apriori_miner is None:
+            raise ValueError("Call mine_frequent_itemsets() first")
+        
+        self.rules = self.weighted_apriori_miner.generate_rules(
+            metric=metric,
+            min_threshold=min_threshold
+        )
+        
+        return self.rules
+    
+    @staticmethod
+    def _frozenset_to_str(fs: frozenset) -> str:
+        """Convert frozenset to readable string."""
+        return ", ".join(sorted(list(fs)))
+    
+    def add_readable_rule_str(self) -> pd.DataFrame:
+        """Add human-readable string columns for rules."""
+        if self.weighted_apriori_miner is None:
+            raise ValueError("Call mine_frequent_itemsets() first")
+        
+        self.rules = self.weighted_apriori_miner.add_readable_rule_str()
+        return self.rules
+
+
+def benchmark_weighted_algorithms(
+    basket_bool: pd.DataFrame,
+    weights: pd.Series,
+    min_support: float = 0.01,
+    max_len: int = None,
+    metric: str = "lift",
+    min_threshold: float = 1.0,
+) -> dict:
+    """
+    Benchmark weighted vs unweighted algorithms.
+    
+    Args:
+        basket_bool (pd.DataFrame): Boolean basket
+        weights (pd.Series): Transaction weights
+        min_support (float): Minimum support threshold
+        max_len (int): Max itemset length
+        metric (str): Rule metric
+        min_threshold (float): Min metric threshold
+        
+    Returns:
+        dict: Results from all four algorithms
+    """
+    print("="*80)
+    print("BENCHMARK: Traditional vs Weighted Algorithms")
+    print("="*80)
+    
+    results = {}
+    
+    # 1. Traditional Apriori
+    print("\n[1/4] Traditional Apriori...")
+    t0 = time.time()
+    trad_apriori = AssociationRulesMiner(basket_bool)
+    fi_ap = trad_apriori.mine_frequent_itemsets(min_support, max_len, True)
+    rules_ap = trad_apriori.generate_rules(metric, min_threshold)
+    t_ap = time.time() - t0
+    
+    results['traditional_apriori'] = {
+        'time': t_ap,
+        'n_itemsets': len(fi_ap),
+        'n_rules': len(rules_ap),
+        'itemsets': fi_ap,
+        'rules': rules_ap
+    }
+    print(f"  Time: {t_ap:.2f}s | Itemsets: {len(fi_ap)} | Rules: {len(rules_ap)}")
+    
+    # 2. Weighted Apriori
+    print("\n[2/4] Weighted Apriori...")
+    t0 = time.time()
+    w_apriori = WeightedAprioriMiner(basket_bool, weights)
+    fi_wap = w_apriori.mine_frequent_itemsets(min_support, max_len, True)
+    rules_wap = w_apriori.generate_rules(metric, min_threshold)
+    t_wap = time.time() - t0
+    
+    results['weighted_apriori'] = {
+        'time': t_wap,
+        'n_itemsets': len(fi_wap),
+        'n_rules': len(rules_wap),
+        'itemsets': fi_wap,
+        'rules': rules_wap
+    }
+    print(f"  Time: {t_wap:.2f}s | Itemsets: {len(fi_wap)} | Rules: {len(rules_wap)}")
+    
+    # 3. Traditional FP-Growth
+    print("\n[3/4] Traditional FP-Growth...")
+    t0 = time.time()
+    trad_fpg = FPGrowthMiner(basket_bool)
+    fi_fp = trad_fpg.mine_frequent_itemsets(min_support, max_len, True)
+    rules_fp = trad_fpg.generate_rules(metric, min_threshold)
+    t_fp = time.time() - t0
+    
+    results['traditional_fpgrowth'] = {
+        'time': t_fp,
+        'n_itemsets': len(fi_fp),
+        'n_rules': len(rules_fp),
+        'itemsets': fi_fp,
+        'rules': rules_fp
+    }
+    print(f"  Time: {t_fp:.2f}s | Itemsets: {len(fi_fp)} | Rules: {len(rules_fp)}")
+    
+    # 4. Weighted FP-Growth
+    print("\n[4/4] Weighted FP-Growth...")
+    t0 = time.time()
+    w_fpg = WeightedFPGrowthMiner(basket_bool, weights)
+    fi_wfp = w_fpg.mine_frequent_itemsets(min_support, max_len, True)
+    rules_wfp = w_fpg.generate_rules(metric, min_threshold)
+    t_wfp = time.time() - t0
+    
+    results['weighted_fpgrowth'] = {
+        'time': t_wfp,
+        'n_itemsets': len(fi_wfp),
+        'n_rules': len(rules_wfp),
+        'itemsets': fi_wfp,
+        'rules': rules_wfp
+    }
+    print(f"  Time: {t_wfp:.2f}s | Itemsets: {len(fi_wfp)} | Rules: {len(rules_wfp)}")
+    
+    # Summary
+    print("\n" + "="*80)
+    print("SUMMARY")
+    print("="*80)
+    summary = pd.DataFrame({
+        'Algorithm': [
+            'Traditional Apriori',
+            'Weighted Apriori',
+            'Traditional FP-Growth',
+            'Weighted FP-Growth'
+        ],
+        'Time (s)': [t_ap, t_wap, t_fp, t_wfp],
+        'Itemsets': [len(fi_ap), len(fi_wap), len(fi_fp), len(fi_wfp)],
+        'Rules': [len(rules_ap), len(rules_wap), len(rules_fp), len(rules_wfp)]
+    })
+    print(summary.to_string(index=False))
+    results['summary'] = summary
+    
+    return results
