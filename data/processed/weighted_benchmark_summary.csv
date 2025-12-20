@@ -1,0 +1,5 @@
+Algorithm,Time (s),Itemsets,Rules
+Traditional Apriori,0.09758734703063965,53,2
+Weighted Apriori,99.64072012901306,30758,59902
+Traditional FP-Growth,0.32890939712524414,53,2
+Weighted FP-Growth,101.42458820343018,30758,59902
