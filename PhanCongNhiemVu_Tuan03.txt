@@ -1,3 +1,6 @@
-5.3.1.3	Post-processing có trọng số			ĐT Phát			23:30 20/12/2025 (commit code + nộp slide báo cáo)
-5.3.1.4 Weighted Apriori / Weighted FP-Growth đơn giả	NH Bình			23:30 20/12/2025 (commit code + nộp slide báo cáo)
-5.3.1.5 High-utility itemset mining			LT Tùng			23:30 20/12/2025 (commit code + nộp slide báo cáo)
+5.3.1.3	Post-processing có trọng số			ĐT Phát			23:30 20/12/2025 (commit code + nộp slide báo cáo)		Không hoàn thành (Nothing)				Yêu cầu bổ sung trước 21:00 21/12/2025
+5.3.1.4 Weighted Apriori / Weighted FP-Growth đơn giản	NH Bình			23:30 20/12/2025 (commit code + nộp slide báo cáo)		Không hoàn thành (không có phần chạy .ipynb, slide)	Yêu cầu bổ sung trước 21:00 21/12/2025
+5.3.1.5 High-utility itemset mining			LT Tùng			23:30 20/12/2025 (commit code + nộp slide báo cáo)		Hoàn thành
+
+5.3.1.3	Post-processing có trọng số			ĐT Phát			21:00 21/12/2025 (bổ sung Code + slide)		
+5.3.1.4 Weighted Apriori / Weighted FP-Growth đơn giản	NH Bình			21:00 21/12/2025 (bổ sung phần chạy .ipynb, slide)		
