@@ -1,9 +1,9 @@
 # Báo Cáo: High-Utility Itemset Mining (HUIM)
 ## Lab_PhatTrien_5315 - Phân tích Tập Mục Giá Trị Cao
 
-**Ngày thực hiện:** 20/12/2025  
-**Người thực hiện:** Lưu Thanh Tùng
-**Phương pháp:** High-Utility Itemset Mining với TWU-based Pruning
++ **Ngày thực hiện:** 20/12/2025  
++ **Người thực hiện:** `Lưu Thanh Tùng` 
++ **Phương pháp:** High-Utility Itemset Mining với TWU-based Pruning
 
 ---
 
