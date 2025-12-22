@@ -1,0 +1,92 @@
+[2025-12-23 05:48:44][SUCCESS] Logging system initialized
+[2025-12-23 05:48:44][SUCCESS] Timeout protection enabled
+[2025-12-23 05:50:09][SUCCESS] HighUtilityMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 05:50:36][INFO] UP-Growth: Đã chuẩn bị 18,021 giao dịch
+[2025-12-23 05:50:36][SUCCESS] UPGrowthMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 05:50:36][INFO] 
+============================================================
+[2025-12-23 05:50:36][INFO] TWU Experiment 1/4: Threshold = 5.0%
+[2025-12-23 05:50:36][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 05:50:36][INFO] ============================================================
+[2025-12-23 05:50:36][INFO] Min Utility: £451,261.10
+[2025-12-23 05:55:36][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 5.0%
+[2025-12-23 05:55:36][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 05:55:36][INFO] 
+============================================================
+[2025-12-23 05:55:36][INFO] TWU Experiment 2/4: Threshold = 1.0%
+[2025-12-23 05:55:37][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 05:55:37][INFO] ============================================================
+[2025-12-23 05:55:37][INFO] Min Utility: £90,252.22
+[2025-12-23 06:00:37][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 1.0%
+[2025-12-23 06:00:37][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:00:37][INFO] 
+============================================================
+[2025-12-23 06:00:37][INFO] TWU Experiment 3/4: Threshold = 0.5%
+[2025-12-23 06:00:37][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:00:38][INFO] ============================================================
+[2025-12-23 06:00:38][INFO] Min Utility: £45,126.11
+[2025-12-23 06:05:38][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.5%
+[2025-12-23 06:05:39][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:05:39][INFO] 
+============================================================
+[2025-12-23 06:05:39][INFO] TWU Experiment 4/4: Threshold = 0.1%
+[2025-12-23 06:05:39][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:05:39][INFO] ============================================================
+[2025-12-23 06:05:40][INFO] Min Utility: £9,025.22
+[2025-12-23 06:10:40][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.1%
+[2025-12-23 06:10:41][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:10:43][SUCCESS] 
+✓ Đã lưu kết quả TWU vào: E:\dnu.khmt.1701.1771040029@gmail.com\ShoppingCartAnalysis_FrequentPatternTree\Lab_PhatTrien_5315\output\KetQuaThuNghiem_TapGiaTri_MinUtilityPercent.csv
+[2025-12-23 06:11:49][INFO] 
+============================================================
+[2025-12-23 06:11:50][INFO] UP-Growth Experiment 1/4: Threshold = 5.0%
+[2025-12-23 06:11:51][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:11:51][INFO] ============================================================
+[2025-12-23 06:11:52][INFO] Min Utility: £451,261.10
+[2025-12-23 06:11:52][INFO] UP-Growth Mining - Min Utility: £451,261.10, Max Length: 2
+[2025-12-23 06:11:53][INFO] UP-Growth: 365 promising items
+[2025-12-23 06:11:53][INFO] UP-Growth: 16,114 transactions sau filter
+[2025-12-23 06:11:55][INFO] UP-Growth: Đã tạo 156,159 nodes trong 1 tree(s)
+[2025-12-23 06:16:52][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 5.0%
+[2025-12-23 06:16:53][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:16:54][INFO] 
+============================================================
+[2025-12-23 06:16:54][INFO] UP-Growth Experiment 2/4: Threshold = 1.0%
+[2025-12-23 06:16:54][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:16:55][INFO] ============================================================
+[2025-12-23 06:16:55][INFO] Min Utility: £90,252.22
+[2025-12-23 06:16:56][INFO] UP-Growth Mining - Min Utility: £90,252.22, Max Length: 2
+[2025-12-23 06:16:57][INFO] UP-Growth: 1,906 promising items
+[2025-12-23 06:16:58][INFO] UP-Growth: 17,638 transactions sau filter
+[2025-12-23 06:17:02][INFO] UP-Growth: Đã tạo 386,374 nodes trong 1 tree(s)
+[2025-12-23 06:21:56][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 1.0%
+[2025-12-23 06:21:57][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:21:58][INFO] 
+============================================================
+[2025-12-23 06:21:59][INFO] UP-Growth Experiment 3/4: Threshold = 0.5%
+[2025-12-23 06:22:00][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:22:01][INFO] ============================================================
+[2025-12-23 06:22:01][INFO] Min Utility: £45,126.11
+[2025-12-23 06:22:01][INFO] UP-Growth Mining - Min Utility: £45,126.11, Max Length: 2
+[2025-12-23 06:22:02][INFO] UP-Growth: 2,480 promising items
+[2025-12-23 06:22:03][INFO] UP-Growth: 17,776 transactions sau filter
+[2025-12-23 06:22:09][INFO] UP-Growth: Đã tạo 416,015 nodes trong 1 tree(s)
+[2025-12-23 06:27:02][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.5%
+[2025-12-23 06:27:02][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:27:03][INFO] 
+============================================================
+[2025-12-23 06:27:04][INFO] UP-Growth Experiment 4/4: Threshold = 0.1%
+[2025-12-23 06:27:04][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 06:27:05][INFO] ============================================================
+[2025-12-23 06:27:06][INFO] Min Utility: £9,025.22
+[2025-12-23 06:27:06][INFO] UP-Growth Mining - Min Utility: £9,025.22, Max Length: 2
+[2025-12-23 06:27:07][INFO] UP-Growth: 3,270 promising items
+[2025-12-23 06:27:08][INFO] UP-Growth: 17,956 transactions sau filter
+[2025-12-23 06:27:18][INFO] UP-Growth: Đã tạo 448,173 nodes trong 2 tree(s)
+[2025-12-23 06:32:06][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.1%
+[2025-12-23 06:32:08][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 06:32:10][SUCCESS] 
+✓ Đã lưu kết quả UP-Growth vào: E:\dnu.khmt.1701.1771040029@gmail.com\ShoppingCartAnalysis_FrequentPatternTree\Lab_PhatTrien_5315\output\KetQuaThuNghiem_UPGrowth_MinUtilityPercent.csv
+[2025-12-23 06:39:24][SUCCESS] 
+✓ Tạo df_hui cho visualization: 0 itemsets
+[2025-12-23 06:43:06][SUCCESS] Loaded 4 TWU results and 4 UP-Growth results

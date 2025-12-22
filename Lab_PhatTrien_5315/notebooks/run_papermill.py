@@ -3,11 +3,12 @@ from pathlib import Path
 
 import papermill as pm
 
-LAB_DIR = Path(__file__).resolve().parent
+# File này nằm trong Lab_PhatTrien_5315/notebooks/
+NOTEBOOKS_DIR = Path(__file__).resolve().parent
+LAB_DIR = NOTEBOOKS_DIR.parent  # Lab_PhatTrien_5315/
 # Project root là thư mục cha chứa data/ (ShoppingCartAnalysis_FrequentPatternTree)
 PROJECT_ROOT = LAB_DIR.parent
 
-NOTEBOOKS_DIR = LAB_DIR / "notebooks"
 RUNS_DIR = NOTEBOOKS_DIR / "runs"
 
 DATA_DIR = PROJECT_ROOT / "data"
@@ -155,16 +156,24 @@ pm.execute_notebook(
         CLEANED_DATA_PATH=str(PROCESSED_DIR / "cleaned_uk_data.csv"),
         OUTPUT_DIR=str(PROCESSED_DIR),
         HUI_OUTPUT_PATH=str(PROCESSED_DIR / "high_utility_itemsets.csv"),
-        
+
         # Tham số tối ưu hóa
         MIN_UTILITY_PERCENT=0.1,
         MIN_UTILITY_ABSOLUTE=0,
         MAX_ITEMSET_LENGTH=2,
         
+        # Timeout configuration (giây) - theo max_length
+        TIMEOUT_CONFIG={
+            1: 180,
+            2: 300
+        },
+
         # Tham số thử nghiệm
-        test_thresholds=[0.1, 0.05, 0.025, 0.0125],  # 10%, 5%, 2.5%, 1.25%
-        test_max_lengths=[2, 3, 4],  # Test nhiều độ dài
-        TIME_LIMIT_SECONDS=600,  # 10 phút timeout cho mỗi experiment
+        # Lần 1
+        # TEST_THRESHOLDS=[5e-2, 1e-2, 0.5e-2, 0.1e-2],
+
+        # Lần 2
+        TEST_THRESHOLDS=[0.01e-2, 0.005e-2, 0.0025e-2, 0.00125e-2],
         
         # Cột dữ liệu
         INVOICE_COL="InvoiceNo",
@@ -182,7 +191,7 @@ pm.execute_notebook(
         TOP_N=5,
         
         # Kiểm soát chạy phân tích k-itemsets (Section 3.1, 3.2)
-        RUN_ANALYSIS=True,  # Set False để bỏ qua phân tích k-itemsets (tiết kiệm thời gian)
+        RUN_ANALYSIS=True,
         
         # Màu sắc
         COLOR_BLUE='#3498db',
