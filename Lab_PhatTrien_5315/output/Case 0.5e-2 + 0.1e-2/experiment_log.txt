@@ -1,0 +1,79 @@
+[2025-12-23 08:04:05][SUCCESS] Logging system initialized
+[2025-12-23 08:04:05][SUCCESS] Timeout protection enabled
+[2025-12-23 08:06:05][SUCCESS] HighUtilityMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 08:06:47][INFO] UP-Growth: Đã chuẩn bị 18,021 giao dịch
+[2025-12-23 08:06:47][SUCCESS] UPGrowthMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 08:06:47][INFO] 
+============================================================
+[2025-12-23 08:06:47][INFO] TWU Experiment 1/2: Threshold = 0.5%
+[2025-12-23 08:06:47][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 08:06:47][INFO] ============================================================
+[2025-12-23 08:06:47][INFO] Min Utility: £45,126.11
+[2025-12-23 08:11:47][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.5%
+[2025-12-23 08:11:47][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 08:11:47][INFO] 
+============================================================
+[2025-12-23 08:11:47][INFO] TWU Experiment 2/2: Threshold = 0.1%
+[2025-12-23 08:11:47][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 08:11:48][INFO] ============================================================
+[2025-12-23 08:11:48][INFO] Min Utility: £9,025.22
+[2025-12-23 08:16:48][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.1%
+[2025-12-23 08:16:48][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 08:16:49][SUCCESS] 
+✓ Đã lưu kết quả TWU vào: E:\dnu.khmt.1701.1771040029@gmail.com\ShoppingCartAnalysis_FrequentPatternTree\Lab_PhatTrien_5315\output\KetQuaThuNghiem_TapGiaTri_MinUtilityPercent.csv
+[2025-12-23 08:17:23][INFO] 
+============================================================
+[2025-12-23 08:17:23][INFO] UP-Growth Experiment 1/2: Threshold = 0.5%
+[2025-12-23 08:17:23][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 08:17:24][INFO] ============================================================
+[2025-12-23 08:17:24][INFO] Min Utility: £45,126.11
+[2025-12-23 08:17:24][INFO] UP-Growth Mining - Min Utility: £45,126.11, Max Length: 3
+[2025-12-23 08:17:24][INFO] UP-Growth: 2,480 promising items
+[2025-12-23 08:17:24][INFO] UP-Growth: 17,776 transactions sau filter
+[2025-12-23 08:17:28][INFO] UP-Growth: Đã tạo 416,015 nodes trong 1 tree(s)
+[2025-12-23 08:22:24][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.5%
+[2025-12-23 08:22:24][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 08:22:24][INFO] 
+============================================================
+[2025-12-23 08:22:25][INFO] UP-Growth Experiment 2/2: Threshold = 0.1%
+[2025-12-23 08:22:25][INFO] ⏱️ Timeout: 300s (5.0 min)
+[2025-12-23 08:22:26][INFO] ============================================================
+[2025-12-23 08:22:26][INFO] Min Utility: £9,025.22
+[2025-12-23 08:22:27][INFO] UP-Growth Mining - Min Utility: £9,025.22, Max Length: 3
+[2025-12-23 08:22:27][INFO] UP-Growth: 3,270 promising items
+[2025-12-23 08:22:27][INFO] UP-Growth: 17,956 transactions sau filter
+[2025-12-23 08:22:33][INFO] UP-Growth: Đã tạo 434,327 nodes trong 2 tree(s)
+[2025-12-23 08:27:27][TIMEOUT] ⏱️ TIMEOUT sau 300s cho threshold 0.1%
+[2025-12-23 08:27:28][WARNING] Skipping experiment và tiếp tục với threshold tiếp theo...
+[2025-12-23 08:27:29][SUCCESS] 
+✓ Đã lưu kết quả UP-Growth vào: E:\dnu.khmt.1701.1771040029@gmail.com\ShoppingCartAnalysis_FrequentPatternTree\Lab_PhatTrien_5315\output\KetQuaThuNghiem_UPGrowth_MinUtilityPercent.csv
+[2025-12-23 08:32:58][SUCCESS] 
+✓ Tạo df_hui cho visualization: 0 itemsets
+[2025-12-23 08:34:42][SUCCESS] Loaded 2 TWU results and 2 UP-Growth results
+[2025-12-23 08:41:41][INFO] 
+============================================================
+[2025-12-23 08:41:42][INFO] PHÂN TÍCH SPEEDUP (TWU-based vs UP-Growth)
+[2025-12-23 08:41:42][INFO] ============================================================
+[2025-12-23 08:41:42][INFO] Threshold 0.5%: TWU-based nhanh hơn 1.00x
+[2025-12-23 08:41:43][INFO] Threshold 0.1%: TWU-based nhanh hơn 1.00x
+[2025-12-23 08:49:47][INFO] 
+================================================================================
+[2025-12-23 08:49:47][INFO] KẾT LUẬN TỪ THỬ NGHIỆM
+[2025-12-23 08:49:47][INFO] ================================================================================
+[2025-12-23 08:49:47][INFO] 
+1. PHÂN TÍCH THRESHOLD:
+[2025-12-23 08:49:47][INFO]    - Threshold 0.5%: Tìm được -1 itemsets
+[2025-12-23 08:49:48][INFO]    - Threshold 0.1%: Tìm được -1 itemsets
+[2025-12-23 08:49:48][INFO] 
+2. SO SÁNH THUẬT TOÁN:
+[2025-12-23 08:49:49][SUCCESS]    - TWU-based nhanh hơn trung bình 1.00x
+[2025-12-23 08:49:49][INFO] 
+3. KHUYẾN NGHỊ:
+[2025-12-23 08:49:50][WARNING]    - Thử nghiệm threshold thấp hơn 1.25% để tìm nhiều itemsets hơn
+[2025-12-23 08:49:50][INFO] 
+================================================================================
+[2025-12-23 08:49:50][SUCCESS] ✓ HOÀN THÀNH TẤT CẢ THỬ NGHIỆM
+[2025-12-23 08:49:51][INFO] ================================================================================
+[2025-12-23 08:51:47][INFO] Đã đọc 2 kết quả TWU và 2 kết quả UP-Growth
+[2025-12-23 08:53:45][SUCCESS] 
+✓ Đã lưu bảng tổng hợp vào: E:\dnu.khmt.1701.1771040029@gmail.com\ShoppingCartAnalysis_FrequentPatternTree\Lab_PhatTrien_5315\output\TongHop_SoSanh_TWU_UPGrowth.csv
