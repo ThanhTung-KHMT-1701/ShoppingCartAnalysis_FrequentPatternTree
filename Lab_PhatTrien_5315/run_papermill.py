@@ -156,15 +156,23 @@ pm.execute_notebook(
         OUTPUT_DIR=str(PROCESSED_DIR),
         HUI_OUTPUT_PATH=str(PROCESSED_DIR / "high_utility_itemsets.csv"),
         
-        # Tham số tối ưu hóa
-        MIN_UTILITY_PERCENT=0.1,
-        MIN_UTILITY_ABSOLUTE=0,
-        MAX_ITEMSET_LENGTH=2,
+        # ==================== XỬ LÝ OUTLIERS ====================
+        # Loại bỏ các giao dịch có Quantity bất thường (ví dụ: PAPER CRAFT = 80,995)
+        REMOVE_OUTLIERS=True,
+        MAX_QUANTITY_THRESHOLD=10000,  # Loại bỏ giao dịch có Quantity > 10,000
         
-        # Tham số thử nghiệm
-        test_thresholds=[0.1, 0.05, 0.025, 0.0125],  # 10%, 5%, 2.5%, 1.25%
-        test_max_lengths=[2, 3, 4],  # Test nhiều độ dài
-        TIME_LIMIT_SECONDS=600,  # 10 phút timeout cho mỗi experiment
+        # Tham số tối ưu hóa
+        MIN_UTILITY_PERCENT=0.01,  # 1% threshold mặc định
+        MIN_UTILITY_ABSOLUTE=0,
+        MAX_ITEMSET_LENGTH=3,
+        
+        # Tham số thử nghiệm - Lần 3: Threshold 1-2% (sau khi loại outliers)
+        TEST_THRESHOLDS=[0.02, 0.015, 0.01],  # 2%, 1.5%, 1%
+        TIMEOUT_CONFIG = {
+            1: 300,
+            2: 400,
+            3: 600,
+        },
         
         # Cột dữ liệu
         INVOICE_COL="InvoiceNo",

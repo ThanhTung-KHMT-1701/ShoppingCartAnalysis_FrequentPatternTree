@@ -1,323 +1,420 @@
-# Báo Cáo: High-Utility Itemset Mining (HUIM)
-## Lab_PhatTrien_5315 - Phân tích Tập Mục Giá Trị Cao
+# 📊 Lab_PhatTrien_5315: High-Utility Itemset Mining (HUIM)
+## Phân tích Tập Mục Giá Trị Cao - Sự khác biệt giữa "Frequent" và "High-Utility"
 
-**Ngày thực hiện:** 20/12/2025  
-**Người thực hiện:** Lab_PhatTrien_5315  
-**Phương pháp:** High-Utility Itemset Mining với TWU-based Pruning
-
----
-
-## 📊 TÓM TẮT TỔNG QUAN
-
-### Dữ liệu đầu vào
-- **Tổng số giao dịch:** 485,123 dòng
-- **Số hoá đơn duy nhất:** 18,021 hoá đơn
-- **Số sản phẩm duy nhất:** 4,007 sản phẩm
-- **Tổng doanh thu (Utility):** £9,025,222.08
-- **Nguồn dữ liệu:** Online Retail UK (2010-2011)
-
-### Thống kê Utility
-| Chỉ số | Giá trị (£) |
-|--------|-------------|
-| Trung bình | 18.60 |
-| Trung vị | 8.42 |
-| Min | 0.001 |
-| Max | 168,469.60 |
-| Phân vị 25% | 3.36 |
-| Phân vị 75% | 16.95 |
+**Ngày thực hiện:** 23/12/2025  
+**Phương pháp:** High-Utility Itemset Mining với TWU-based Pruning và UP-Growth  
+**Dữ liệu:** Online Retail UK (2010-2011)
 
 ---
 
-## ⚙️ CẤU HÌNH THUẬT TOÁN
+## 🎯 MỤC TIÊU CỦA LAB NÀY
 
-### Tham số Mining
-- **Ngưỡng Min Utility:** £902,522.21 (10% tổng doanh thu)
-- **Độ dài tối đa itemset:** 2 (1-itemsets và 2-itemsets)
-- **Thuật toán:** TWU-based High-Utility Itemset Mining
-- **Thời gian chạy:** 49.39 giây
+Theo yêu cầu của bài tập **5.3.1.5 - Cho nhóm tham vọng lấy 10: High-utility itemset mining**:
 
-### Kết quả Mining
-- **Số item có TWU ≥ min_utility:** 65 items
-- **Số 1-itemsets HUI:** 0
-- **Số 2-itemsets HUI:** 0
-- **Tổng High-Utility Itemsets:** 0
+> *"Thay vì tối ưu theo số lần xuất hiện (frequent), tối ưu theo tổng "utility" (doanh thu/lợi nhuận)."*
 
-> ⚠️ **Lưu ý:** Với ngưỡng 10% (£902,522.21), không có itemset đơn lẻ hoặc cặp sản phẩm nào đạt ngưỡng utility này. Điều này cho thấy doanh thu phân tán trên nhiều sản phẩm thay vì tập trung vào một vài itemsets cụ thể.
+Lab này tập trung vào:
+1. **Triển khai thuật toán HUIM** - khai thác tập mục giá trị cao
+2. **So sánh tư duy FIM vs HUIM** - frequent itemsets vs high-utility itemsets
+3. **Phân tích ý nghĩa kinh doanh** - phát hiện những sản phẩm mà FIM truyền thống bỏ qua
 
 ---
 
-## 💰 TOP 20 SẢN PHẨM THEO UTILITY
+## 💡 SỰ KHÁC BIỆT VỀ TƯ DUY: "FREQUENT" vs "HIGH-UTILITY"
 
-| # | Sản phẩm | Utility (£) | % Tổng | Frequency | % Hoá đơn |
-|---|----------|-------------|--------|-----------|-----------|
-| 1 | **DOTCOM POSTAGE** | 206,248.77 | 2.29% | 706 | 3.92% |
-| 2 | **PAPER CRAFT, LITTLE BIRDIE** | 168,469.60 | 1.87% | 1 | 0.01% |
-| 3 | **REGENCY CAKESTAND 3 TIER** | 142,273.29 | 1.58% | 1,685 | 9.35% |
-| 4 | **WHITE HANGING HEART T-LIGHT HOLDER** | 100,497.72 | 1.11% | 2,162 | 12.00% |
-| 5 | **PARTY BUNTING** | 93,658.53 | 1.04% | 1,593 | 8.84% |
-| 6 | **JUMBO BAG RED RETROSPOT** | 86,471.34 | 0.96% | 1,935 | 10.74% |
-| 7 | **MEDIUM CERAMIC TOP STORAGE JAR** | 80,575.63 | 0.89% | 225 | 1.25% |
-| 8 | **PAPER CHAIN KIT 50'S CHRISTMAS** | 62,742.54 | 0.70% | 1,125 | 6.24% |
-| 9 | **ASSORTED COLOUR BIRD ORNAMENT** | 54,756.79 | 0.61% | 1,371 | 7.61% |
-| 10 | **CHILLI LIGHTS** | 53,336.56 | 0.59% | 650 | 3.61% |
-| 11 | **PICNIC BASKET WICKER 60 PIECES** | 39,619.50 | 0.44% | 2 | 0.01% |
-| 12 | **BLACK RECORD COVER FRAME** | 39,442.17 | 0.44% | 357 | 1.98% |
-| 13 | **JUMBO BAG PINK POLKADOT** | 38,571.40 | 0.43% | 1,159 | 6.43% |
-| 14 | **RABBIT NIGHT LIGHT** | 38,087.95 | 0.42% | 833 | 4.62% |
-| 15 | **SPOTTY BUNTING** | 37,098.83 | 0.41% | 1,040 | 5.77% |
-| 16 | **DOORMAT KEEP CALM AND COME IN** | 37,070.59 | 0.41% | 696 | 3.86% |
-| 17 | **Manual** | 35,292.70 | 0.39% | 257 | 1.43% |
-| 18 | **WOOD BLACK BOARD ANT WHITE FINISH** | 35,123.97 | 0.39% | 654 | 3.63% |
-| 19 | **POPCORN HOLDER** | 32,709.32 | 0.36% | 747 | 4.15% |
-| 20 | **VICTORIAN GLASS HANGING T-LIGHT** | 32,321.57 | 0.36% | 1,002 | 5.56% |
+### 1. Định nghĩa cơ bản
 
-**Tổng Top 20:** £1,556,348.13 (17.24% tổng doanh thu)
+| Khái niệm | Frequent Itemset Mining (FIM) | High-Utility Itemset Mining (HUIM) |
+|-----------|------------------------------|-----------------------------------|
+| **Câu hỏi** | "Sản phẩm nào xuất hiện **nhiều lần** nhất?" | "Sản phẩm nào mang lại **doanh thu cao** nhất?" |
+| **Metric** | Support = Frequency / Total Transactions | Utility = Σ(Quantity × UnitPrice) |
+| **Giả định** | Mọi item có giá trị như nhau | Item có giá trị khác nhau |
+| **Output** | Itemsets với support ≥ min_support | Itemsets với utility ≥ min_utility |
+
+### 2. Ví dụ minh họa từ dữ liệu thực tế
+
+#### 🔴 Trường hợp FIM phát hiện được nhưng HUIM xếp hạng thấp:
+
+| Sản phẩm | Frequency | Rank (FIM) | Utility (£) | Rank (HUIM) | Chênh lệch |
+|----------|-----------|------------|-------------|-------------|------------|
+| WHITE HANGING HEART T-LIGHT HOLDER | 2,162 | **#1** | £100,497 | #4 | -3 |
+| JUMBO BAG RED RETROSPOT | 1,935 | **#2** | £86,471 | #6 | -4 |
+| LUNCH BAG RED RETROSPOT | 1,392 | **#5** | £29,007 | #30 | **-25** |
+| LUNCH BAG BLACK SKULL | 1,216 | **#9** | £20,259 | #68 | **-59** |
+
+**Insight**: Những sản phẩm bán chạy nhất (high frequency) không nhất thiết mang lại doanh thu cao nhất!
+
+#### 🟢 Trường hợp HUIM phát hiện được nhưng FIM bỏ qua hoàn toàn:
+
+| Sản phẩm | Frequency | Rank (FIM) | Utility (£) | Rank (HUIM) | Chênh lệch |
+|----------|-----------|------------|-------------|-------------|------------|
+| **PAPER CRAFT, LITTLE BIRDIE** | 1 | #3920 | £168,469 | **#2** | **+3918** |
+| **PICNIC BASKET WICKER 60 PIECES** | 2 | #3762 | £39,619 | **#11** | **+3751** |
+| **Adjust bad debt** | 1 | #3920 | £11,062 | #163 | **+3757** |
+| **AMAZON FEE** | 2 | #3762 | £13,761 | #120 | **+3642** |
+| MEDIUM CERAMIC TOP STORAGE JAR | 225 | #620 | £80,575 | **#7** | **+613** |
+
+**Insight quan trọng**: 
+- `PAPER CRAFT, LITTLE BIRDIE` chỉ bán **1 lần** nhưng mang lại **£168,469** (1.87% tổng doanh thu)
+- FIM xếp hạng #3920 (gần cuối), nhưng HUIM xếp hạng **#2** (top đầu)
+- Đây là ví dụ điển hình về **Hidden Gem** - sản phẩm có giá trị cao nhưng FIM không thể phát hiện!
+
+### 3. Công thức so sánh
+
+#### 📊 Frequent Itemset Mining (FIM)
+
+$$
+\text{Support}(X) = \frac{|\{T \in D : X \subseteq T\}|}{|D|}
+$$
+
+> **Giải thích**: Đếm số transaction chứa itemset $X$ chia cho tổng số transaction.
+> - ✅ Đơn giản, dễ tính toán
+> - ❌ Không phân biệt sản phẩm £1 và £1000
 
 ---
 
-## 🎯 PHÂN LOẠI SẢN PHẨM
+#### 💰 High-Utility Itemset Mining (HUIM)
 
-Dựa trên ma trận Utility-Frequency (75th percentile), sản phẩm được phân loại thành:
+**Utility của itemset $X$ trong transaction $T$:**
 
-| Phân loại | Số lượng | % | Mô tả |
-|-----------|----------|---|-------|
-| **⭐ Stars** | 789 | 19.7% | High Utility + High Frequency - Sản phẩm vàng |
-| **💎 Hidden Gems** | 8 | 0.2% | High Utility + Low Frequency - Tiềm năng |
-| **Khác** | 3,210 | 80.1% | Các sản phẩm còn lại |
+$$
+u(X, T) = \sum_{x \in X} q(x, T) \times p(x)
+$$
 
-### 🔍 Chi tiết phân loại
+Trong đó:
+- $q(x, T)$ = số lượng (quantity) của item $x$ trong transaction $T$
+- $p(x)$ = đơn giá (unit profit) của item $x$
+
+**Tổng Utility của itemset $X$ trong database $D$:**
+
+$$
+u(X) = \sum_{T \in D \land X \subseteq T} u(X, T)
+$$
+
+**Transaction-Weighted Utility (TWU) - Upper bound để pruning:**
+
+$$
+TWU(X) = \sum_{T \in D \land X \subseteq T} TU(T)
+$$
+
+Trong đó $TU(T) = \sum_{x \in T} q(x,T) \times p(x)$ là tổng utility của transaction $T$.
+
+> **Tính chất quan trọng**: $TWU(X) \geq u(X)$ → Dùng để loại bỏ ứng viên sớm (pruning)
+
+---
+
+## 🔧 Ý TƯỞNG TRIỂN KHAI SO VỚI CÁC NOTEBOOKS CŨ
+
+### So sánh Pipeline cũ vs mới
+
+| Bước | Notebooks Cũ (Bước 3-5) | Lab_PhatTrien_5315 (Mới) |
+|------|-------------------------|--------------------------|
+| **Input** | Basket boolean (có/không mua) | Transaction với Quantity × Price |
+| **Thuật toán** | Apriori, FP-Growth | TWU-based Pruning, UP-Growth |
+| **Metric chính** | Support (frequency-based) | Utility (profit-based) |
+| **Output** | Frequent Itemsets + Association Rules | High-Utility Itemsets |
+| **Ứng dụng** | Market Basket Analysis | Revenue Optimization |
+
+### Các thuật toán được triển khai
+
+#### 1. TWU-based High-Utility Mining
+
+**Transaction-Weighted Utility (TWU):**
+
+$$
+TWU(X) = \sum_{T \in D,\ X \subseteq T} TU(T)
+$$
+
+| Tính chất | Giải thích |
+|-----------|------------|
+| **Upper bound** | $TWU(X) \geq u(X)$ luôn đúng |
+| **Anti-monotone** | Nếu $TWU(X) < \text{min\_utility}$ thì $X$ và mọi superset của $X$ đều không phải HUI |
+| **Pruning** | Loại bỏ ứng viên sớm, giảm không gian tìm kiếm |
+
+#### 2. UP-Growth (Utility Pattern Growth)
+
+**Cải tiến của FP-Growth cho HUIM:**
+
+| Thành phần | FP-Growth | UP-Growth |
+|------------|-----------|-----------|
+| Cấu trúc dữ liệu | FP-Tree | UP-Tree |
+| Metric | Support count | Node utility |
+| Header table | Item frequency | Item TWU |
+
+**Các chiến lược pruning:**
+- **DGU** (Discarding Global Unpromising items): Loại items có $TWU < \text{min\_utility}$
+- **DGN** (Decreasing Global Node utilities): Giảm utility của node khi xây tree
+- **DLU** (Discarding Local Unpromising items): Loại items không promising trong conditional pattern base
+- **DLN** (Decreasing Local Node utilities): Giảm utility trong conditional UP-Tree
+
+> **Ưu điểm**: Giảm overestimation của TWU, tìm HUI chính xác hơn
+
+### Cấu trúc thư mục mới
+
+```
+Lab_PhatTrien_5315/
+├── notebooks/
+│   └── Lab_PhatTrien_5315.ipynb    # Notebook chính với HUIM
+├── output/
+│   ├── Case 0.5e-2 + 0.1e-2/       # Kết quả thử nghiệm
+│   │   ├── SoSanh_FIM_vs_HUIM.csv  # So sánh chi tiết
+│   │   ├── experiment_log.txt       # Log thử nghiệm
+│   │   └── *.png, *.html            # Visualizations
+│   └── ...
+├── run_papermill.py                 # Script chạy automated
+└── Lab_PhatTrien_5315.md            # Báo cáo này
+```
+
+---
+
+## 📊 KẾT QUẢ THỬ NGHIỆM (Case 0.5% + 0.1%)
+
+### Thông tin dữ liệu
+
+| Chỉ số | Giá trị |
+|--------|---------|
+| Tổng số giao dịch (dòng) | 397,924 |
+| Số hoá đơn duy nhất | 18,021 |
+| Số sản phẩm duy nhất | 4,007 |
+| **Tổng Utility (Doanh thu)** | **£9,025,222.08** |
+
+### Cấu hình thử nghiệm
+
+| Tham số | Giá trị |
+|---------|---------|
+| Test Thresholds | 0.5% (£45,126), 0.1% (£9,025) |
+| Max Itemset Length | 3 |
+| Timeout per experiment | 300 giây |
+| Thuật toán | TWU-based, UP-Growth |
+
+### Kết quả chạy
+
+| Threshold | TWU-based | UP-Growth | Ghi chú |
+|-----------|-----------|-----------|---------|
+| 0.5% (£45,126) | TIMEOUT (300s) | TIMEOUT (300s) | Cần threshold cao hơn |
+| 0.1% (£9,025) | TIMEOUT (300s) | TIMEOUT (300s) | Cần threshold cao hơn |
+
+**Phân tích**: Với threshold thấp (0.1-0.5%), không gian tìm kiếm quá lớn dẫn đến timeout. Điều này cho thấy cần:
+- Tăng threshold lên 1-2%
+- Hoặc loại bỏ outliers để giảm không gian tìm kiếm
+
+---
+
+## 📈 Ý NGHĨA CÁC BIỂU ĐỒ VÀ HÌNH ẢNH
+
+### 1. Biểu đồ "3.1 Phân Tích Khả Năng Tạo K-Itemsets"
+![3.1 Phan Tich Kha Nang Tao K-Itemsets.png](output/Case%200.5e-2%20+%200.1e-2/3.1%20Phan%20Tich%20Kha%20Nang%20Tao%20K-Itemsets.png)
+
+**Ý nghĩa**: 
+- Phân tích số lượng items trong mỗi hoá đơn
+- Cho biết khả năng tạo 2-itemsets, 3-itemsets, 4-itemsets...
+- Giúp chọn `MAX_ITEMSET_LENGTH` phù hợp để tránh lãng phí thời gian
+
+### 2. Biểu đồ "3.2 CDF và Khuyến Nghị Threshold"
+![3.2 CDF va Khuyen Nghi Threshold.png](output/Case%200.5e-2%20+%200.1e-2/3.2%20CDF%20va%20Khuyen%20Nghi%20Threshold.png)
+
+**Ý nghĩa**:
+- CDF (Cumulative Distribution Function) của utility
+- Giúp chọn threshold phù hợp: threshold càng thấp → tìm được nhiều itemsets nhưng chạy lâu hơn
+- Khuyến nghị: 1-2% threshold cho dataset này
+
+### 3. Biểu đồ "3.2 Phân Bố Utility của K-Itemsets"
+![3.2 Phan Bo Utility cua K-Itemsets.png](output/Case%200.5e-2%20+%200.1e-2/3.2%20Phan%20Bo%20Utility%20cua%20K-Itemsets.png)
+
+**Ý nghĩa**:
+- Phân bố utility theo độ dài itemset (1-item, 2-item, 3-item...)
+- Cho thấy utility tập trung ở đâu: single items hay combinations
+
+### 4. Biểu đồ "5.1 Runtime vs Số Lượng Itemsets"
+![5.1 Runtime vs So Luong Itemsets.png](output/Case%200.5e-2%20+%200.1e-2/5.1%20Runtime%20vs%20So%20Luong%20Itemsets.png)
+
+**Ý nghĩa**:
+- Trade-off giữa thời gian chạy và số itemsets tìm được
+- Threshold thấp → nhiều itemsets nhưng chạy lâu (có thể timeout)
+- Threshold cao → ít itemsets nhưng chạy nhanh
+
+### 5. Biểu đồ "7.2 So Sánh FIM vs HUIM"
+![7.2 So Sanh FIM vs HUIM.png](output/Case%200.5e-2%20+%200.1e-2/7.2%20So%20Sanh%20FIM%20vs%20HUIM.png)
+
+**Ý nghĩa**:
+- **Quan trọng nhất** - So sánh trực quan ranking của FIM vs HUIM
+- Điểm càng xa đường chéo → sự khác biệt giữa 2 approach càng lớn
+- Các điểm ở góc trái trên: HUIM xếp hạng cao nhưng FIM xếp hạng thấp → **Hidden Gems**
+- Các điểm ở góc phải dưới: FIM xếp hạng cao nhưng HUIM xếp hạng thấp → **Volume Drivers**
+
+### 6. Ma trận "6.4 Utility-Frequency Matrix" (Interactive HTML)
+**File**: `6.4 Ma Tran Utility-Frequency.html`
+
+**Ý nghĩa**:
+- Phân loại 4,007 sản phẩm thành 4 nhóm:
+  - **Stars** ⭐: High Utility + High Frequency → Sản phẩm vàng
+  - **Hidden Gems** 💎: High Utility + Low Frequency → HUIM phát hiện, FIM bỏ qua
+  - **Volume Drivers** 📦: Low Utility + High Frequency → FIM phát hiện, HUIM đánh giá thấp
+  - **Others**: Low Utility + Low Frequency → Không quan trọng
+
+---
+
+## 🔍 INSIGHTS
+
+### Insight 1: HUIM phát hiện "Hidden Gems" mà FIM hoàn toàn bỏ qua
+
+**Dữ liệu căn cứ** (từ file `SoSanh_FIM_vs_HUIM.csv`):
+
+| Sản phẩm | Frequency | Rank FIM | Utility | Rank HUIM | Rank Δ |
+|----------|-----------|----------|---------|-----------|--------|
+| PAPER CRAFT, LITTLE BIRDIE | 1 | #3920 | £168,469 | #2 | **+3918** |
+| PICNIC BASKET WICKER 60 PIECES | 2 | #3762 | £39,619 | #11 | **+3751** |
+| MEDIUM CERAMIC TOP STORAGE JAR | 225 | #620 | £80,575 | #7 | **+613** |
+
+**Kết luận**: 
+- 5 sản phẩm Hidden Gems đóng góp **£571,373** (6.33% tổng doanh thu)
+- FIM sẽ xếp những sản phẩm này gần cuối bảng (rank > 600) do tần suất thấp
+- Nếu chỉ dùng FIM, doanh nghiệp sẽ **bỏ lỡ** những sản phẩm có giá trị cao này
+
+---
+
+### Insight 2: "Bán chạy" không có nghĩa là "sinh lời cao"
+
+**Dữ liệu căn cứ**:
+
+| Sản phẩm | Rank FIM | Rank HUIM | Frequency | Utility | Đánh giá |
+|----------|----------|-----------|-----------|---------|----------|
+| LUNCH BAG BLACK SKULL | #9 | #68 | 1,216 | £20,259 | Bán chạy nhưng lời thấp |
+| NATURAL SLATE HEART CHALKBOARD | #8 | #34 | 1,219 | £27,108 | Bán chạy nhưng lời thấp |
+| LUNCH BAG RED RETROSPOT | #5 | #30 | 1,392 | £29,007 | Bán chạy nhưng lời thấp |
+
+**Kết luận**:
+- 5 sản phẩm "Volume Drivers" có tổng utility chỉ **£137,732** (1.53% doanh thu)
+- Nhưng chiếm **top 10** trong ranking FIM
+- Nếu doanh nghiệp chỉ dựa vào FIM để quyết định đầu tư marketing/kho, sẽ đầu tư sai chỗ
+
+---
+
+### Insight 3: Sản phẩm "Stars" - cân bằng giữa Frequency và Utility
+
+**Dữ liệu căn cứ**:
+
+| Sản phẩm | Rank FIM | Rank HUIM | Frequency | Utility | Đánh giá |
+|----------|----------|-----------|-----------|---------|----------|
+| REGENCY CAKESTAND 3 TIER | #3 | #3 | 1,685 | £142,273 | ⭐ Perfect Star |
+| WHITE HANGING HEART T-LIGHT HOLDER | #1 | #4 | 2,162 | £100,497 | ⭐ Star |
+| PARTY BUNTING | #4 | #5 | 1,593 | £93,658 | ⭐ Star |
+| JUMBO BAG RED RETROSPOT | #2 | #6 | 1,935 | £86,471 | ⭐ Star |
+| ASSORTED COLOUR BIRD ORNAMENT | #6 | #9 | 1,371 | £54,756 | ⭐ Star |
+
+**Kết luận**:
+- 5 sản phẩm Stars đóng góp **£477,657** (5.29% doanh thu)
+- Cả FIM và HUIM đều đánh giá cao những sản phẩm này
+- Đây là nhóm sản phẩm lý tưởng để ưu tiên
+
+---
+
+### Insight 4: Outlier "PAPER CRAFT" - Cảnh báo về dữ liệu
+
+**Dữ liệu căn cứ**:
+- `PAPER CRAFT, LITTLE BIRDIE`: 1 giao dịch với Quantity = 80,995 → Utility = £168,469
+- Chiếm **1.87%** tổng doanh thu từ **1 giao dịch duy nhất**
+
+**Kết luận**:
+- Đây có thể là:
+  - Giao dịch B2B đặc biệt (wholesale)
+  - Lỗi nhập liệu (data entry error)
+  - Giao dịch cần được xem xét riêng
+- HUIM phát hiện ra outlier này, trong khi FIM coi nó là sản phẩm không quan trọng (#3920)
+- **Khuyến nghị**: Xem xét loại bỏ outliers (Quantity > 10,000) trước khi mining để có kết quả chính xác hơn
+
+---
+
+### Insight 5: Độ phức tạp của HUIM cao hơn FIM
+
+**Dữ liệu căn cứ** (từ experiment_log.txt):
+- TWU-based với threshold 0.5%: TIMEOUT sau 300s
+- UP-Growth với threshold 0.5%: TIMEOUT sau 300s
+- UP-Growth tạo ra 416,015 nodes trong UP-Tree (threshold 0.5%)
+
+**Kết luận**:
+- HUIM phức tạp hơn FIM vì:
+  - FIM chỉ đếm frequency (binary: có/không)
+  - HUIM phải tính utility cho từng item trong từng transaction
+- Trade-off: HUIM cho kết quả có ý nghĩa kinh doanh hơn nhưng tốn tài nguyên hơn
+- **Khuyến nghị**: Sử dụng threshold 1-2% thay vì 0.1-0.5% cho dataset lớn
+
+---
+
+## 📋 PHÂN LOẠI SẢN PHẨM THEO MA TRẬN UTILITY-FREQUENCY
+
+### Thống kê tổng quan
+
+| Category | Số sản phẩm | % | Tổng Utility | % Doanh thu |
+|----------|-------------|---|--------------|-------------|
+| **Stars** ⭐ | 5 | 0.12% | £477,657 | 5.29% |
+| **Hidden Gems** 💎 | 5 | 0.12% | £571,373 | **6.33%** |
+| **Volume Drivers** 📦 | 5 | 0.12% | £137,732 | 1.53% |
+| **Others** | 3,992 | 99.64% | £7,838,459 | 86.85% |
+
+### Chi tiết từng nhóm
 
 #### ⭐ Stars (High Utility + High Frequency)
-Đây là nhóm sản phẩm **quan trọng nhất** - vừa bán chạy vừa sinh lời cao:
-- Chiếm gần 20% tổng số sản phẩm
-- Ví dụ: REGENCY CAKESTAND 3 TIER, WHITE HANGING HEART T-LIGHT HOLDER, PARTY BUNTING
+```
+Đặc điểm: Vừa bán chạy vừa sinh lời cao → Sản phẩm vàng
+Chiến lược: Duy trì stock, đầu tư marketing
+
+1. REGENCY CAKESTAND 3 TIER       - Freq: 1,685 | Utility: £142,273
+2. WHITE HANGING HEART T-LIGHT    - Freq: 2,162 | Utility: £100,497
+3. PARTY BUNTING                  - Freq: 1,593 | Utility: £93,658
+4. JUMBO BAG RED RETROSPOT        - Freq: 1,935 | Utility: £86,471
+5. ASSORTED COLOUR BIRD ORNAMENT  - Freq: 1,371 | Utility: £54,756
+```
 
 #### 💎 Hidden Gems (High Utility + Low Frequency)
-Sản phẩm có **giá trị cao nhưng ít được mua**:
-- Chỉ có 8 sản phẩm (0.2%)
-- Ví dụ nổi bật: **PAPER CRAFT, LITTLE BIRDIE** (£168,469.60 từ chỉ 1 giao dịch!)
-- Ví dụ khác: **PICNIC BASKET WICKER 60 PIECES** (£39,619.50 từ 2 giao dịch)
+```
+Đặc điểm: Ít bán nhưng sinh lời cao → FIM bỏ qua, HUIM phát hiện
+Chiến lược: Tăng exposure, targeted marketing
+
+1. DOTCOM POSTAGE                  - Freq: 706   | Utility: £206,248
+2. PAPER CRAFT, LITTLE BIRDIE      - Freq: 1     | Utility: £168,469 ⚠️
+3. MEDIUM CERAMIC TOP STORAGE JAR  - Freq: 225   | Utility: £80,575
+4. PAPER CHAIN KIT 50'S CHRISTMAS  - Freq: 1,125 | Utility: £62,742
+5. CHILLI LIGHTS                   - Freq: 650   | Utility: £53,336
+```
+
+#### 📦 Volume Drivers (Low Utility + High Frequency)
+```
+Đặc điểm: Bán chạy nhưng lời thấp → FIM đánh giá cao, HUIM đánh giá thấp
+Chiến lược: Cân nhắc tăng giá hoặc upselling
+
+1. HEART OF WICKER SMALL           - Freq: 1,164 | Utility: £31,394
+2. SET OF 3 CAKE TINS PANTRY       - Freq: 1,241 | Utility: £29,962
+3. LUNCH BAG RED RETROSPOT         - Freq: 1,392 | Utility: £29,007
+4. NATURAL SLATE HEART CHALKBOARD  - Freq: 1,219 | Utility: £27,108
+5. LUNCH BAG BLACK SKULL           - Freq: 1,216 | Utility: £20,259
+```
 
 ---
 
-## 📈 INSIGHTS QUAN TRỌNG
-
-### 1. Sự khác biệt giữa Utility và Frequency
-
-**Ví dụ điển hình:**
-
-| Sản phẩm | Utility (£) | Frequency | Đặc điểm |
-|----------|-------------|-----------|----------|
-| PAPER CRAFT, LITTLE BIRDIE | 168,469.60 | 1 | 💎 **Hidden Gem** - Giá trị cực cao, hiếm có |
-| WHITE HANGING HEART T-LIGHT | 100,497.72 | 2,162 | ⭐ **Star** - Vừa phổ biến vừa sinh lời |
-| DOTCOM POSTAGE | 206,248.77 | 706 | ⭐ **Star** - Doanh thu cao từ phí ship |
-
-### 2. Phân tích Top 3 sản phẩm
-
-#### 🥇 #1: DOTCOM POSTAGE (£206,248.77)
-- **Loại:** Phí vận chuyển/dịch vụ
-- **Đóng góp:** 2.29% tổng doanh thu
-- **Frequency:** 706 lần (3.92% hoá đơn)
-- **Insight:** Đây là nguồn doanh thu ổn định từ phí dịch vụ
-
-#### 🥈 #2: PAPER CRAFT, LITTLE BIRDIE (£168,469.60)
-- **Loại:** Sản phẩm cao cấp/đơn hàng lớn
-- **Đóng góp:** 1.87% tổng doanh thu
-- **Frequency:** Chỉ 1 lần!
-- **Insight:** Đơn hàng bulk/wholesale cực lớn, có thể là giao dịch B2B
-
-#### 🥉 #3: REGENCY CAKESTAND 3 TIER (£142,273.29)
-- **Loại:** Sản phẩm trang trí cao cấp
-- **Đóng góp:** 1.58% tổng doanh thu
-- **Frequency:** 1,685 lần (9.35% hoá đơn)
-- **Insight:** Sản phẩm best-seller thực sự - vừa phổ biến vừa sinh lời
-
-### 3. Phân tích TWU (Transaction-Weighted Utilization)
-
-- **65 items có TWU ≥ £902,522.21**
-- Nhưng **không có itemset nào** (đơn lẻ hoặc cặp) đạt ngưỡng utility này
-- Điều này chứng minh: **Doanh thu phân tán**, không tập trung vào một vài sản phẩm/cặp sản phẩm
-
----
-
-## 🔬 SO SÁNH: FREQUENT PATTERN vs HIGH-UTILITY MINING
-
-| Khía cạnh | Frequent Pattern Mining | High-Utility Itemset Mining |
-|-----------|------------------------|----------------------------|
-| **Tập trung** | Tần suất xuất hiện | Giá trị kinh tế (doanh thu) |
-| **Phát hiện** | WHITE HANGING HEART (12% hoá đơn) | PAPER CRAFT LITTLE BIRDIE (£168K) |
-| **Bỏ lỡ** | Đơn hàng lớn hiếm có | Sản phẩm bán chạy nhưng margin thấp |
-| **Ứng dụng** | Cross-selling, gợi ý sản phẩm | Tối ưu lợi nhuận, quản lý inventory |
-
-### Ví dụ minh họa
-
-**Frequent Pattern Mining sẽ ưu tiên:**
-- WHITE HANGING HEART T-LIGHT HOLDER (12% hoá đơn)
-- REGENCY CAKESTAND 3 TIER (9.35% hoá đơn)
-
-**High-Utility Mining phát hiện thêm:**
-- PAPER CRAFT, LITTLE BIRDIE (£168K từ 1 đơn!) 
-- PICNIC BASKET WICKER (£39K từ 2 đơn!)
-
-→ Đây là những "**Hidden Gems**" mà Frequent Pattern Mining hoàn toàn bỏ lỡ!
-
----
-
-## 💡 ĐỀ XUẤT KINH DOANH
-
-### 1. Cho nhóm Stars (789 sản phẩm)
-✅ **Ưu tiên tồn kho cao** - Đây là sản phẩm chủ lực  
-✅ **Tạo bundle deals** với các Stars để tăng giá trị đơn hàng  
-✅ **Marketing mạnh mẽ** - Đầu tư quảng cáo cho nhóm này  
-✅ **Đảm bảo không thiếu hàng** - Ảnh hưởng lớn nếu out of stock
-
-**Ví dụ:** REGENCY CAKESTAND, WHITE HANGING HEART, PARTY BUNTING
-
-### 2. Cho nhóm Hidden Gems (8 sản phẩm)
-💎 **Phân tích sâu** - Tại sao frequency thấp?  
-💎 **Tăng visibility** - Marketing, đặt vị trí nổi bật  
-💎 **Target đúng khách hàng** - B2B cho đơn lớn?  
-💎 **Chương trình khuyến mãi đặc biệt** để tăng tần suất
-
-**Ví dụ:** PAPER CRAFT LITTLE BIRDIE, PICNIC BASKET WICKER
-
-### 3. Chiến lược tổng thể
-🎯 **Phí vận chuyển (DOTCOM POSTAGE):**
-- Đánh giá chính sách phí ship hiện tại
-- Cân nhắc free shipping cho đơn hàng lớn để tăng conversion
-
-🎯 **Đơn hàng B2B:**
-- Phát hiện 2 sản phẩm có đơn giá cực cao (£168K và £39K)
-- Phát triển kênh B2B/wholesale riêng biệt
-
-🎯 **Quản lý inventory:**
-- Tập trung tồn kho cho top 20 sản phẩm (chiếm 17.24% doanh thu)
-- Giảm tồn kho các sản phẩm "Khác" có utility thấp
-
----
-
-## 🔧 HẠN CHẾ VÀ HƯỚNG PHÁT TRIỂN
-
-### Hạn chế của phân tích này
-
-1. **Ngưỡng quá cao (10%):**
-   - Không tìm được High-Utility Itemsets (cặp/bộ sản phẩm)
-   - Chỉ phân tích được ở mức single items
-
-2. **Độ dài itemset giới hạn (2):**
-   - Không khám phá được pattern 3+ sản phẩm
-   - Bỏ lỡ các bundle tiềm năng phức tạp hơn
-
-3. **Không tính đến seasonality:**
-   - Dữ liệu 2010-2011 có thể đã lỗi thời
-   - Không phân tích theo mùa/tháng
-
-### Đề xuất phát triển
-
-✨ **Điều chỉnh ngưỡng:**
-```
-MIN_UTILITY_PERCENT = 0.001  # 0.1% (thay vì 10%)
-MAX_ITEMSET_LENGTH = 3       # Tìm 3-itemsets
-```
-
-✨ **Phân tích theo thời gian:**
-- Mining theo tháng/quý để phát hiện xu hướng
-- Phát hiện sản phẩm seasonal
-
-✨ **Kết hợp Frequent + High-Utility:**
-- Tìm itemsets vừa phổ biến vừa sinh lời
-- Cân bằng giữa reach và revenue
-
-✨ **Segmentation khách hàng:**
-- Phân tích HUIM theo segment (B2B vs B2C)
-- Personalization gợi ý sản phẩm
-
----
-
-## 📚 KẾT LUẬN
-
-### Thành tựu chính
-
-1. ✅ **Triển khai thành công** thuật toán High-Utility Itemset Mining với TWU-based pruning
-2. ✅ **Phát hiện 8 Hidden Gems** - sản phẩm có giá trị cao nhưng bị bỏ lỡ bởi Frequent Pattern Mining
-3. ✅ **Phân loại 4,007 sản phẩm** thành Stars, Hidden Gems và Other
-4. ✅ **Xác định top 20 sản phẩm** đóng góp 17.24% tổng doanh thu
-
-### Giá trị kinh doanh
-
-💰 **ROI tiềm năng:**
-- Tối ưu inventory cho top 20: tiết kiệm ~15-20% chi phí
-- Tăng marketing cho Hidden Gems: tăng 10-30% doanh thu từ nhóm này
-- Phát triển kênh B2B: khai thác thị trường đơn hàng lớn
-
-🎯 **Actionable insights:**
-- 789 Stars cần ưu tiên tồn kho
-- 8 Hidden Gems cần tăng marketing
-- 2 sản phẩm B2B cần chiến lược riêng
-
-### Bài học về tư duy
-
-> **"Frequent" ≠ "Profitable"**
-
-- Sản phẩm bán chạy nhất không phải lúc nào cũng sinh lời nhất
-- Cần kết hợp cả Frequency và Utility để có cái nhìn toàn diện
-- High-Utility Mining giúp phát hiện cơ hội kinh doanh ẩn
-
----
-
-## 📖 TÀI LIỆU THAM KHẢO
-
-1. Liu, Y., Liao, W., & Choudhary, A. (2005). *A two-phase algorithm for fast discovery of high utility itemsets.* PAKDD 2005.
-
-2. Fournier-Viger, P., et al. (2014). *FHM: Faster high-utility itemset mining using estimated utility co-occurrence pruning.* ISMIS 2014.
-
-3. Gan, W., et al. (2021). *A survey of utility-oriented pattern mining.* IEEE Transactions on Knowledge and Data Engineering.
-
----
-
-## 📎 PHỤ LỤC
-
-### A. Công thức tính toán
-
-**Utility của itemset X trong giao dịch T:**
-```
-U(X, T) = Σ q(x, T) × p(x)
-```
-
-**Transaction-Weighted Utilization:**
-```
-TWU(X) = Σ TU(T_k) for all T_k containing X
-```
-
-**Tính chất Downward Closure của TWU:**
-```
-If TWU(X) < minUtil → Tất cả superset của X không phải HUI
-```
-
-### B. Cấu hình chi tiết
-
-```python
-# Tham số chính
-MIN_UTILITY_PERCENT = 0.1      # 10% tổng utility
-MAX_ITEMSET_LENGTH = 2         # 1-itemsets và 2-itemsets
-CLEANED_DATA_PATH = "data/processed/cleaned_uk_data.csv"
-HUI_OUTPUT_PATH = "data/processed/high_utility_itemsets.csv"
-
-# Màu sắc visualization
-COLOR_BLUE = '#3498db'    # Xanh dương - Frequency
-COLOR_GREEN = '#2ecc71'   # Xanh lá - Utility
-COLOR_ORANGE = '#e67e22'  # Cam - Highlights
-```
-
-### C. Files output
-
-1. `high_utility_itemsets.csv` - Danh sách HUI (rỗng với ngưỡng 10%)
-2. `item_utility_frequency_comparison.csv` - So sánh Utility vs Frequency
-3. `Lab_PhatTrien_5315_run.ipynb` - Notebook đã chạy với outputs
-
----
-
-**📧 Contact:** Lab_PhatTrien_5315  
-**📅 Last Updated:** 20/12/2025  
-**⏱️ Processing Time:** 49.39 seconds  
-**💾 Data Size:** 485,123 transactions, 18,021 invoices, 4,007 products
+## 🎓 KẾT LUẬN
+
+### Tóm tắt sự khác biệt FIM vs HUIM
+
+| Tiêu chí | Frequent Itemset Mining | High-Utility Itemset Mining |
+|----------|-------------------------|----------------------------|
+| **Tư duy** | "Gì xuất hiện nhiều?" | "Gì mang lại giá trị?" |
+| **Metric** | Count/Frequency | Utility/Profit |
+| **Ưu điểm** | Đơn giản, nhanh | Ý nghĩa kinh doanh cao |
+| **Nhược điểm** | Bỏ qua giá trị | Phức tạp, tốn tài nguyên |
+| **Use case** | Market basket analysis | Revenue optimization |
+
+### Bài học rút ra
+
+1. **FIM và HUIM bổ sung cho nhau** - không phải thay thế
+2. **Hidden Gems** là phát hiện quan trọng nhất của HUIM - những sản phẩm mà FIM hoàn toàn bỏ qua
+3. **Volume Drivers** cần được đánh giá lại - bán chạy không có nghĩa là sinh lời
+4. **Stars** là mục tiêu lý tưởng - kết hợp ưu điểm của cả hai approach
+5. **Outliers** cần được xử lý trước khi mining để có kết quả chính xác
+
+### Hướng phát triển tiếp theo
+
+- [ ] Chạy lại với threshold 1-2% sau khi loại bỏ outliers
+- [ ] So sánh thời gian chạy TWU-based vs UP-Growth
+- [ ] Tìm High-Utility 2-itemsets và 3-itemsets
+- [ ] Phát triển Association Rules dựa trên High-Utility Itemsets
