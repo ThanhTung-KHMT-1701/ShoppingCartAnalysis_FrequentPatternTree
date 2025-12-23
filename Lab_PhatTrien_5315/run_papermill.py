@@ -147,11 +147,61 @@ os.chdir(PROJECT_ROOT)
 # =============================================================================
 # Chạy Notebook High-Utility Itemset Mining (Lab_PhatTrien_5315)
 # =============================================================================
-# Notebook đã có giá trị mặc định, chạy trực tiếp không cần inject parameters
 pm.execute_notebook(
     str(NOTEBOOKS_DIR / "Lab_PhatTrien_5315.ipynb"),
     str(RUNS_DIR / "Lab_PhatTrien_5315_run.ipynb"),
+    parameters=dict(
+        # Đường dẫn dữ liệu
+        CLEANED_DATA_PATH=str(PROCESSED_DIR / "cleaned_uk_data.csv"),
+        OUTPUT_DIR=str(PROCESSED_DIR),
+        HUI_OUTPUT_PATH=str(PROCESSED_DIR / "high_utility_itemsets.csv"),
+        
+        # ==================== XỬ LÝ OUTLIERS ====================
+        # Loại bỏ các giao dịch có Quantity bất thường (ví dụ: PAPER CRAFT = 80,995)
+        REMOVE_OUTLIERS=True,
+        MAX_QUANTITY_THRESHOLD=10000,  # Loại bỏ giao dịch có Quantity > 10,000
+        
+        # Tham số tối ưu hóa
+        MIN_UTILITY_PERCENT=0.01,  # 1% threshold mặc định
+        MIN_UTILITY_ABSOLUTE=0,
+        MAX_ITEMSET_LENGTH=3,
+        
+        # Tham số thử nghiệm - Lần 3: Threshold 1-2% (sau khi loại outliers)
+        TEST_THRESHOLDS=[0.02, 0.015, 0.01],  # 2%, 1.5%, 1%
+        TIMEOUT_CONFIG = {
+            1: 300,
+            2: 400,
+            3: 600,
+        },
+        
+        # Cột dữ liệu
+        INVOICE_COL="InvoiceNo",
+        ITEM_COL="Description",
+        QUANTITY_COL="Quantity",
+        PRICE_COL="UnitPrice",
+        TOTAL_COL="TotalPrice",
+        
+        # Biểu đồ
+        PLOT_TOP_HUI=True,
+        PLOT_COMPARISON=True,
+        PLOT_UTILITY_DISTRIBUTION=True,
+        
+        # Hiển thị
+        TOP_N=5,
+        
+        # Kiểm soát chạy phân tích k-itemsets (Section 3.1, 3.2)
+        RUN_ANALYSIS=True,  # Set False để bỏ qua phân tích k-itemsets (tiết kiệm thời gian)
+        
+        # Màu sắc
+        COLOR_BLUE='#3498db',
+        COLOR_GREEN='#2ecc71',
+        COLOR_ORANGE='#e67e22',
+        COLOR_GRAY='#95a5a6',
+        COLOR_RED='#e74c3c',
+    ),
     kernel_name="python3",
 )
 
 print("✅ Đã chạy xong pipeline High-Utility Itemset Mining!")
+print(f"📊 Kết quả: {RUNS_DIR / 'Lab_PhatTrien_5315_run.ipynb'}")
+print(f"📁 Output: {LAB_DIR / 'output'}")
