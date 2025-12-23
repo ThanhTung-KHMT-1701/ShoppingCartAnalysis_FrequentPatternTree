@@ -122,13 +122,13 @@ Trong đó $TU(T) = \sum_{x \in T} q(x,T) \times p(x)$ là tổng utility của 
 **Transaction-Weighted Utility (TWU):**
 
 $$
-TWU(X) = \sum_{T \in D,\ X \subseteq T} TU(T)
+TWU(X) = \sum_{T \in D, X \subseteq T} TU(T)
 $$
 
 | Tính chất | Giải thích |
 |-----------|------------|
 | **Upper bound** | $TWU(X) \geq u(X)$ luôn đúng |
-| **Anti-monotone** | Nếu $TWU(X) < \text{min\_utility}$ thì $X$ và mọi superset của $X$ đều không phải HUI |
+| **Anti-monotone** | Nếu $TWU(X) < minUtility$ thì $X$ và mọi superset của $X$ đều không phải HUI |
 | **Pruning** | Loại bỏ ứng viên sớm, giảm không gian tìm kiếm |
 
 #### 2. UP-Growth (Utility Pattern Growth)
@@ -142,7 +142,7 @@ $$
 | Header table | Item frequency | Item TWU |
 
 **Các chiến lược pruning:**
-- **DGU** (Discarding Global Unpromising items): Loại items có $TWU < \text{min\_utility}$
+- **DGU** (Discarding Global Unpromising items): Loại items có $TWU < minUtility$
 - **DGN** (Decreasing Global Node utilities): Giảm utility của node khi xây tree
 - **DLU** (Discarding Local Unpromising items): Loại items không promising trong conditional pattern base
 - **DLN** (Decreasing Local Node utilities): Giảm utility trong conditional UP-Tree
