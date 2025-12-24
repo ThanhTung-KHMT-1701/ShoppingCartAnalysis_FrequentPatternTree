@@ -203,7 +203,7 @@ Lab_PhatTrien_5315/
 ## 📈 Ý NGHĨA CÁC BIỂU ĐỒ VÀ HÌNH ẢNH
 
 ### 1. Biểu đồ "3.1 Phân Tích Khả Năng Tạo K-Itemsets"
-![3.1 Phan Tich Kha Nang Tao K-Itemsets.png](output/Case_0.5e-2_0.1e-2/3.1%20Phan%20Tich%20Kha%20Nang%20Tao%20K-Itemsets.png)
+![3.1 Phan Tich Kha Nang Tao K-Itemsets.png](output/Case_01/3.1%20Phan%20Tich%20Kha%20Nang%20Tao%20K-Itemsets.png)
 
 **Ý nghĩa**: 
 - Phân tích số lượng items trong mỗi hoá đơn
@@ -211,7 +211,7 @@ Lab_PhatTrien_5315/
 - Giúp chọn `MAX_ITEMSET_LENGTH` phù hợp để tránh lãng phí thời gian
 
 ### 2. Biểu đồ "3.2 CDF và Khuyến Nghị Threshold"
-![3.2 CDF va Khuyen Nghi Threshold.png](output/Case_0.5e-2_0.1e-2/3.2%20CDF%20va%20Khuyen%20Nghi%20Threshold.png)
+![3.2 CDF va Khuyen Nghi Threshold.png](output/Case_01/3.2%20CDF%20va%20Khuyen%20Nghi%20Threshold.png)
 
 **Ý nghĩa**:
 - CDF (Cumulative Distribution Function) của utility
@@ -219,14 +219,14 @@ Lab_PhatTrien_5315/
 - Khuyến nghị: 1-2% threshold cho dataset này
 
 ### 3. Biểu đồ "3.2 Phân Bố Utility của K-Itemsets"
-![3.2 Phan Bo Utility cua K-Itemsets.png](output/Case_0.5e-2_0.1e-2/3.2%20Phan%20Bo%20Utility%20cua%20K-Itemsets.png)
+![3.2 Phan Bo Utility cua K-Itemsets.png](output/Case_01/3.2%20Phan%20Bo%20Utility%20cua%20K-Itemsets.png)
 
 **Ý nghĩa**:
 - Phân bố utility theo độ dài itemset (1-item, 2-item, 3-item...)
 - Cho thấy utility tập trung ở đâu: single items hay combinations
 
 ### 4. Biểu đồ "5.1 Runtime vs Số Lượng Itemsets"
-![5.1 Runtime vs So Luong Itemsets.png](output/Case_0.5e-2_0.1e-2/5.1%20Runtime%20vs%20So%20Luong%20Itemsets.png)
+![5.1 Runtime vs So Luong Itemsets.png](output/Case_01/5.1%20Runtime%20vs%20So%20Luong%20Itemsets.png)
 
 **Ý nghĩa**:
 - Trade-off giữa thời gian chạy và số itemsets tìm được
@@ -234,7 +234,7 @@ Lab_PhatTrien_5315/
 - Threshold cao → ít itemsets nhưng chạy nhanh
 
 ### 5. Biểu đồ "7.2 So Sánh FIM vs HUIM"
-![7.2 So Sanh FIM vs HUIM.png](output/Case_0.5e-2_0.1e-2/7.2%20So%20Sanh%20FIM%20vs%20HUIM.png)
+![7.2 So Sanh FIM vs HUIM.png](output/Case_01/7.2%20So%20Sanh%20FIM%20vs%20HUIM.png)
 
 **Ý nghĩa**:
 - **Quan trọng nhất** - So sánh trực quan ranking của FIM vs HUIM
