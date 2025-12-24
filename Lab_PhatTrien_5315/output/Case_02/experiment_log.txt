@@ -1,0 +1,22 @@
+[2025-12-23 16:49:30][SUCCESS] ✅ Logging system initialized
+[2025-12-23 16:49:30][SUCCESS] ✅ Timeout protection enabled with PARTIAL tracking
+[2025-12-23 16:50:20][SUCCESS] ✅ HighUtilityMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 16:51:09][INFO] ℹ️ UP-Growth: Đã chuẩn bị 18,021 giao dịch
+[2025-12-23 16:51:09][SUCCESS] ✅ UPGrowthMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 16:51:09][INFO] ℹ️ 
+============================================================
+[2025-12-23 16:51:09][INFO] ℹ️ TWU Experiment 1/1: Threshold = 9.999999999999999e-05%
+[2025-12-23 16:51:09][INFO] ℹ️ ⏱️ Timeout: 600s (10.0 min)
+[2025-12-23 16:51:09][INFO] ℹ️ ============================================================
+[2025-12-23 16:51:09][INFO] ℹ️ Min Utility: £9.03
+[2025-12-23 16:56:50][SUCCESS] ✅ Logging system initialized
+[2025-12-23 16:56:50][SUCCESS] ✅ Timeout protection enabled with PARTIAL tracking
+[2025-12-23 16:57:37][SUCCESS] ✅ HighUtilityMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 16:58:16][INFO] ℹ️ UP-Growth: Đã chuẩn bị 18,021 giao dịch
+[2025-12-23 16:58:16][SUCCESS] ✅ UPGrowthMiner initialized: 18,021 transactions, total utility £9,025,222.08
+[2025-12-23 16:58:16][INFO] ℹ️ 
+============================================================
+[2025-12-23 16:58:16][INFO] ℹ️ TWU Experiment 1/1: Threshold = 9.999999999999999e-05%
+[2025-12-23 16:58:16][INFO] ℹ️ ⏱️ Timeout: 600s (10.0 min)
+[2025-12-23 16:58:16][INFO] ℹ️ ============================================================
+[2025-12-23 16:58:16][INFO] ℹ️ Min Utility: £9.03

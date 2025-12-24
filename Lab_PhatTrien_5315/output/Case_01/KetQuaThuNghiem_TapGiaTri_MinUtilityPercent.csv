@@ -1,0 +1,3 @@
+﻿algorithm,min_utility_percent,min_utility_value,runtime_sec,n_itemsets,n_1itemsets,n_2itemsets,n_3itemsets,max_utility,avg_utility,timeout,status,timestamp
+TWU-based,0.005,45126.11041999987,300,-1,-1,-1,-1,0,0,True,timeout,2025-12-23 08:11:47
+TWU-based,0.001,9025.222083999975,300,-1,-1,-1,-1,0,0,True,timeout,2025-12-23 08:16:48
